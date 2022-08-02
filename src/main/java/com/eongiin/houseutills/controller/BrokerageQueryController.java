@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author eongiin
+ *
+ * 중개수수료가 얼마인지 조회하는 컨트롤러
+ */
 @RestController
 public class BrokerageQueryController {
 
@@ -15,8 +20,6 @@ public class BrokerageQueryController {
             @RequestParam ActionType actionType,
             @RequestParam Long price
     ) {
-
-        // TODO: 중개수수료 계산하는 로직
         BrokeragePolicy policy = BrokeragePolicyFactory.of(actionType);
         return policy.calculate(price);
     }

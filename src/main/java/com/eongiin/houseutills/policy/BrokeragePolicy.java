@@ -1,11 +1,18 @@
 package com.eongiin.houseutills.policy;
 
-public interface BrokeragePolicy {
-    default Long calculate(Long price) {
-        // TODO:가격을 받아서 중개수수료를 게산한다
-        BrokerageRule rule = createBrokerageRule(price);
-        return rule.calcMaxBrokerage(price);
-    }
+import com.eongiin.houseutills.exception.ErrorCode;
+import com.eongiin.houseutills.exception.HouseUtilsException;
 
-    BrokerageRule createBrokerageRule(Long price);
+import java.util.List;
+
+public interface BrokeragePolicy {
+    List<BrokerageRule> getRules();
+
+    default Long calculate(Long price) {
+        BrokerageRule brokerageRule = getRules().stream()
+                .filter(rule -> price < rule.getLessThan())
+                .findFirst()
+                .orElseThrow(() -> new HouseUtilsException(ErrorCode.INTERNAL_ERROR));
+        return brokerageRule.calcMaxBrokerage(price);
+    }
 }
